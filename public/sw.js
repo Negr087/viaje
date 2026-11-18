@@ -1,6 +1,6 @@
 // Service worker: la app abre aunque el wifi del resort esté caído,
 // y muestra lo último que se cargó (agenda, info, fotos ya vistas).
-const CACHE = 'viaje-v3';
+const CACHE = 'viaje-v4';
 // Si la red tarda más que esto y hay algo guardado, se muestra lo guardado
 // (el wifi "conectado pero sin internet" es el peor caso).
 const ESPERA_RED_MS = 4000;
