@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { useEnVivo } from '@/lib/en-vivo';
 import { avisar } from '@/lib/push';
 import { hoyISO } from '@/lib/config';
+import Bitchat from '@/components/Bitchat';
 
 const ULTIMOS = 300;
 
@@ -64,6 +65,8 @@ export default function Chat() {
   return (
     <>
       <Cabecera titulo="Chat" emoji="💬" />
+
+      <Bitchat />
 
       {mensajes.length === 0 && <Vacio>Todavía no hay mensajes. ¡Mandá el primero!</Vacio>}
 

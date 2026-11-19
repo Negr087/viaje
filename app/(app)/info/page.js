@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { useEnVivo } from '@/lib/en-vivo';
 import { consultas } from '@/lib/consultas';
 import { VIAJE } from '@/lib/config';
+import Bitchat from '@/components/Bitchat';
 
 const CATS = {
   vuelo: '✈️ Vuelos',
@@ -65,6 +66,8 @@ export default function Info() {
         <p style={{ margin: 0 }}>{VIAJE.destino}</p>
         <p className="small muted" style={{ margin: '0.4rem 0 0' }}>✓ Esta sección queda guardada en el celular: se ve aunque no haya señal.</p>
       </div>
+
+      <Bitchat guiaAbierta />
 
       {abierto && (
         <form className="card stack" onSubmit={guardar}>
