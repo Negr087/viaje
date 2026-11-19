@@ -68,6 +68,18 @@ export async function POST(req) {
         },
       });
     }
+  } else if (tipo === 'chat') {
+    const { data: m } = await admin.from('chat').select('*').eq('id', id).maybeSingle();
+    if (m && await primeraVez(admin, `chat:${id}`)) {
+      r = await mandar(admin, {
+        tipo, excepto: m.persona_id, origen,
+        aviso: {
+          titulo: `💬 ${await nombre(m.persona_id)}`,
+          cuerpo: m.texto.length > 140 ? `${m.texto.slice(0, 140)}…` : m.texto,
+          url: '/chat', tag: 'chat',
+        },
+      });
+    }
   } else if (tipo === 'fotos') {
     // `id` = la persona que subió. Como mucho una notificación por hora por persona,
     // contando todas las fotos que subió desde la anterior.

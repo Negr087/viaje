@@ -18,6 +18,7 @@ const SECCIONES = [
   ['/excursiones', '🚤', 'Excursiones', 'Anotate a las que vas'],
   ['/fotos', '📸', 'Álbum', 'Fotos de todos'],
   ['/agenda', '📅', 'Agenda', 'Qué hacemos hoy'],
+  ['/chat', '💬', 'Chat', 'Para hablar todos, chicos incluidos'],
   ['/ninera', '🍼', 'Turnos de niñera', 'Noches libres por pareja'],
   ['/gastos', '💸', 'Gastos extra', 'Quién le debe a quién'],
   ['/desafios', '🎯', 'Desafíos', '3 por día, sumá puntos'],

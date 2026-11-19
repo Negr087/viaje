@@ -6,7 +6,7 @@ const ITEMS = [
   ['/', '🏠', 'Inicio'],
   ['/fotos', '📸', 'Fotos'],
   ['/agenda', '📅', 'Agenda'],
-  ['/checklist', '✅', 'Checklist'],
+  ['/chat', '💬', 'Chat'],
   ['/gastos', '💸', 'Gastos'],
 ];
 

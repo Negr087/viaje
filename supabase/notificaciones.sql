@@ -13,7 +13,7 @@ create table if not exists push_suscripciones (
   persona_id uuid not null references personas(id) on delete cascade,
   p256dh text not null,
   auth text not null,
-  apagados text[] not null default '{}',   -- tipos que ese celular no quiere: fotos, agenda, ninera, gastos
+  apagados text[] not null default '{}',   -- tipos que ese celular no quiere: fotos, agenda, ninera, gastos, chat
   created_at timestamptz default now()
 );
 

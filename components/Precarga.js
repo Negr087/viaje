@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { consultas } from '@/lib/consultas';
 
 // Pantallas que tienen que abrir aunque no haya señal (aeropuerto, wifi del resort).
-const PAGINAS = ['/', '/info', '/agenda', '/checklist', '/familia', '/excursiones', '/ninera', '/gastos', '/desafios'];
+const PAGINAS = ['/', '/info', '/agenda', '/chat', '/checklist', '/familia', '/excursiones', '/ninera', '/gastos', '/desafios'];
 const CADA_MS = 2 * 60 * 60 * 1000; // cada 2 h como mucho
 
 // Con señal, descarga en segundo plano las pantallas y los datos clave para que
