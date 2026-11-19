@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { usePersonas } from '@/components/PersonaProvider';
 import { Cabecera, PersonaChips, Vacio, nombres } from '@/components/ui';
 import { supabase } from '@/lib/supabase';
+import { avisar } from '@/lib/push';
 import { useEnVivo } from '@/lib/en-vivo';
 import { consultas } from '@/lib/consultas';
 import { VIAJE, fmtDia } from '@/lib/config';
@@ -82,7 +83,8 @@ export default function Gastos() {
     if (!form.descripcion.trim() || !Number(form.monto) || !form.pagado_por || !form.participantes.length) {
       return alert('Completá qué, cuánto, quién pagó y entre quiénes se divide.');
     }
-    await supabase.from('gastos').insert({ ...form, monto: Number(form.monto) });
+    const { data } = await supabase.from('gastos').insert({ ...form, monto: Number(form.monto) }).select('id').single();
+    avisar('gastos', data?.id, yo?.id);
     setAbierto(false);
     cargar();
   }

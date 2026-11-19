@@ -2,6 +2,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Cabecera, Vacio } from '@/components/ui';
 import { supabase } from '@/lib/supabase';
+import { usePersonas } from '@/components/PersonaProvider';
+import { avisar } from '@/lib/push';
 import { useEnVivo } from '@/lib/en-vivo';
 import { consultas } from '@/lib/consultas';
 import { diasDelViaje, fmtDia, hoyISO, numeroDeDia } from '@/lib/config';
@@ -9,6 +11,7 @@ import { diasDelViaje, fmtDia, hoyISO, numeroDeDia } from '@/lib/config';
 const VACIO = { hora: '', titulo: '', lugar: '', notas: '' };
 
 export default function Agenda() {
+  const { yo } = usePersonas();
   const dias = diasDelViaje();
   const [dia, setDia] = useState(dias.includes(hoyISO()) ? hoyISO() : dias[0]);
   const [items, setItems] = useState([]);
@@ -26,7 +29,8 @@ export default function Agenda() {
   async function guardar(e) {
     e.preventDefault();
     if (!form.titulo.trim()) return;
-    await supabase.from('agenda').insert({ ...form, fecha: dia, hora: form.hora || null });
+    const { data } = await supabase.from('agenda').insert({ ...form, fecha: dia, hora: form.hora || null }).select('id').single();
+    avisar('agenda', data?.id, yo?.id);
     setForm(VACIO); setAbierto(false);
     cargar();
   }

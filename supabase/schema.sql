@@ -1,6 +1,6 @@
 -- =========================================================
 -- App del viaje familiar — schema para Supabase
--- Pegalo entero en Supabase → SQL Editor → Run, y después seguridad.sql
+-- Pegalo entero en Supabase → SQL Editor → Run, y después seguridad.sql y notificaciones.sql
 --
 -- Todo vive en el schema "viaje", separado de tus tablas en "public",
 -- así se puede usar en un proyecto de Supabase que ya tengas.

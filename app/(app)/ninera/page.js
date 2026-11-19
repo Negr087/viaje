@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { usePersonas } from '@/components/PersonaProvider';
 import { Cabecera, PersonaChips, Vacio, nombres } from '@/components/ui';
 import { supabase } from '@/lib/supabase';
+import { avisar } from '@/lib/push';
 import { useEnVivo } from '@/lib/en-vivo';
 import { consultas } from '@/lib/consultas';
 import { diasDelViaje, fmtDia } from '@/lib/config';
@@ -26,7 +27,8 @@ export default function Ninera() {
   async function guardar(e) {
     e.preventDefault();
     if (!form.salen.length) return alert('Elegí quiénes salen.');
-    await supabase.from('turnos_ninera').insert(form);
+    const { data } = await supabase.from('turnos_ninera').insert(form).select('id').single();
+    avisar('ninera', data?.id, yo?.id);
     setForm({ ...VACIO, fecha: form.fecha }); setAbierto(false);
     cargar();
   }

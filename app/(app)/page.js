@@ -6,6 +6,7 @@ import { Progreso } from '@/components/ui';
 import Olas from '@/components/Olas';
 import TemaToggle from '@/components/TemaToggle';
 import ClimaHora from '@/components/ClimaHora';
+import Notificaciones from '@/components/Notificaciones';
 import { useEnVivo } from '@/lib/en-vivo';
 import { supabase } from '@/lib/supabase';
 import { VIAJE, diasDelViaje, estadoViaje, fmtDia, hoyISO, numeroDeDia } from '@/lib/config';
@@ -152,6 +153,8 @@ export default function Inicio() {
       </div>
 
       <Hero ahora={ahora} />
+
+      <Notificaciones yo={yo} />
 
       {estadoViaje() === 'antes' && check && (
         <Link href="/checklist" className="card" style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}>

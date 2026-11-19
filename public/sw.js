@@ -1,6 +1,6 @@
 // Service worker: la app abre aunque el wifi del resort esté caído,
 // y muestra lo último que se cargó (agenda, info, fotos ya vistas).
-const CACHE = 'viaje-v4';
+const CACHE = 'viaje-v5';
 // Si la red tarda más que esto y hay algo guardado, se muestra lo guardado
 // (el wifi "conectado pero sin internet" es el peor caso).
 const ESPERA_RED_MS = 4000;
@@ -93,4 +93,33 @@ self.addEventListener('fetch', (e) => {
   if (req.mode === 'navigate') {
     e.respondWith(networkFirst(req, '/'));
   }
+});
+
+// ---------- Notificaciones push ----------
+self.addEventListener('push', (e) => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch {}
+  e.waitUntil(self.registration.showNotification(d.titulo || 'Puerto Plata 2027', {
+    body: d.cuerpo || '',
+    icon: '/icon-192.png',
+    badge: '/icon-192.png',
+    tag: d.tag,            // misma etiqueta = reemplaza a la anterior en vez de apilarse
+    renotify: !!d.tag,
+    data: { url: d.url || '/' },
+  }));
+});
+
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  const destino = new URL(e.notification.data?.url || '/', self.location.origin).href;
+  e.waitUntil((async () => {
+    const abiertas = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const c of abiertas) {
+      if (c.url.startsWith(self.location.origin)) {
+        await c.focus();
+        return c.navigate(destino).catch(() => {});
+      }
+    }
+    return self.clients.openWindow(destino);
+  })());
 });
