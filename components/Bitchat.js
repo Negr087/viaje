@@ -16,7 +16,8 @@ function sistema() {
 }
 
 // iPhone: abre bitchat:// y, si no está instalada (la app sigue a la vista), va al App Store.
-// Android: la página de Play Store muestra "Abrir" si ya la tienen, o "Instalar" si no.
+// Android: el único link que Bitchat acepta es bitchat://verify (abre la app con la hoja de
+// verificación encima, se cierra con "atrás"). Si no está instalada, Chrome va a Play Store.
 export function abrirBitchat() {
   const so = sistema();
   if (so === 'ios') {
@@ -24,7 +25,7 @@ export function abrirBitchat() {
     document.addEventListener('visibilitychange', () => clearTimeout(t), { once: true });
     window.location.href = 'bitchat://';
   } else if (so === 'android') {
-    window.location.href = BITCHAT.playStore;
+    window.location.href = `intent://verify#Intent;scheme=bitchat;package=com.bitchat.droid;S.browser_fallback_url=${encodeURIComponent(BITCHAT.playStore)};end`;
   } else {
     window.open(BITCHAT.playStore, '_blank', 'noopener');
   }
