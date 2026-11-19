@@ -5,10 +5,21 @@ import { Cabecera, Vacio } from '@/components/ui';
 import { supabase, archivoUrl } from '@/lib/supabase';
 import { useEnVivo } from '@/lib/en-vivo';
 import { encolar, pendientes, procesarCola } from '@/lib/upload-queue';
-import { comprimir } from '@/lib/image';
+import { pathMini, prepararFoto } from '@/lib/image';
 import { fmtDia, hoyISO, numeroDeDia } from '@/lib/config';
 
-const MAX_VIDEO = 50 * 1024 * 1024; // límite por archivo del plan gratis de Supabase
+// Grilla: muestra la miniatura; si no existe (fotos viejas o HEIC), cae a la original.
+function Mini({ foto }) {
+  const [src, setSrc] = useState(archivoUrl(pathMini(foto.path)));
+  return (
+    <img
+      src={src}
+      alt={foto.caption || ''}
+      loading="lazy"
+      onError={() => { const orig = archivoUrl(foto.path); if (src !== orig) setSrc(orig); }}
+    />
+  );
+}
 
 export default function Fotos() {
   const { yo, personas, mapa } = usePersonas();
@@ -49,28 +60,29 @@ export default function Fotos() {
   }, [sincronizar]);
 
   async function elegirArchivos(e) {
-    const files = [...e.target.files];
+    const todos = [...e.target.files];
     e.target.value = '';
+    // Solo fotos: los videos llenan el espacio gratis enseguida
+    const files = todos.filter((f) => f.type.startsWith('image/'));
+    if (files.length < todos.length) {
+      alert('Solo se pueden subir fotos. Los videos compartilos por WhatsApp o Google Fotos.');
+    }
     if (!files.length || !yo) return;
     setPreparando(true);
     for (const f of files) {
-      const esVideo = f.type.startsWith('video/');
-      if (esVideo && f.size > MAX_VIDEO) {
-        alert(`"${f.name}" pesa más de 50 MB. Recortalo un poco y probá de nuevo.`);
-        continue;
-      }
-      const blob = esVideo ? f : await comprimir(f);
+      const { foto, mini } = await prepararFoto(f);
       const extOriginal = (f.name.split('.').pop() || '').toLowerCase();
-      const ext = blob.type === 'image/jpeg' ? 'jpg' : extOriginal || (esVideo ? 'mp4' : 'jpg');
+      const ext = foto.type === 'image/jpeg' ? 'jpg' : extOriginal || 'jpg';
       await encolar({
         id: crypto.randomUUID(),
-        blob,
-        tipo: blob.type || f.type || 'application/octet-stream',
+        blob: foto,
+        mini,
+        tipo: foto.type || f.type || 'image/jpeg',
         ext,
         persona_id: yo.id,
         caption: caption.trim() || null,
         dia: hoyISO(),
-        es_video: esVideo,
+        es_video: false,
       });
     }
     setCaption('');
@@ -115,8 +127,8 @@ export default function Fotos() {
       <div className="card stack">
         <input placeholder="Comentario (opcional)" value={caption} onChange={(e) => setCaption(e.target.value)} />
         <label className="subir">
-          <input type="file" accept="image/*,video/*" multiple onChange={elegirArchivos} disabled={preparando || !yo} />
-          {preparando ? 'Preparando...' : '📷 Subir fotos o videos'}
+          <input type="file" accept="image/*" multiple onChange={elegirArchivos} disabled={preparando || !yo} />
+          {preparando ? 'Preparando...' : '📷 Subir fotos'}
         </label>
         {pend > 0 && (
           <p className="small muted center">
@@ -150,7 +162,7 @@ export default function Fotos() {
               <button key={f.id} onClick={() => setAbierta(f)}>
                 {f.es_video
                   ? <><video src={archivoUrl(f.path) + '#t=0.5'} preload="metadata" muted playsInline /><span className="play">▶</span></>
-                  : <img src={archivoUrl(f.path)} alt={f.caption || ''} loading="lazy" />}
+                  : <Mini foto={f} />}
                 {f.foto_likes.length > 0 && <span className="likes">❤️ {f.foto_likes.length}</span>}
               </button>
             ))}

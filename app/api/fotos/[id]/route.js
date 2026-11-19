@@ -21,7 +21,7 @@ export async function DELETE(req, { params }) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!foto) return NextResponse.json({ ok: true }); // ya no estaba
 
-  const { error: eArchivo } = await admin.storage.from(BUCKET).remove([foto.path]);
+  const { error: eArchivo } = await admin.storage.from(BUCKET).remove([foto.path, foto.path.replace(/\.[^./]+$/, '') + '_mini.jpg']);
   if (eArchivo) return NextResponse.json({ error: eArchivo.message }, { status: 500 });
 
   const { error: eFila } = await admin.from('fotos').delete().eq('id', id);

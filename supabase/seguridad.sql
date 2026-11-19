@@ -62,11 +62,11 @@ alter default privileges in schema viaje grant all on tables to service_role;
 
 -- ---------- Bucket de fotos ----------
 -- Público para ver (las rutas tienen un id aleatorio imposible de adivinar),
--- solo fotos y videos, máximo 50 MB por archivo.
+-- solo fotos (sin videos), máximo 15 MB por archivo.
 update storage.buckets
 set public = true,
-    file_size_limit = 52428800,
-    allowed_mime_types = array['image/*', 'video/*']
+    file_size_limit = 15728640,
+    allowed_mime_types = array['image/*']
 where id = 'viaje-fotos';
 
 drop policy if exists "viaje_fotos_leer" on storage.objects;
