@@ -5,20 +5,45 @@ import { Cabecera } from '@/components/ui';
 import { supabase } from '@/lib/supabase';
 import { useEnVivo } from '@/lib/en-vivo';
 import { PREMIOS } from '@/lib/config';
-import { ganadores } from '@/lib/premios';
+import { ganadores, todosLosPremios } from '@/lib/premios';
 
 export default function Premios() {
   const { yo, personas, mapa } = usePersonas();
   const [votos, setVotos] = useState([]);
+  const [extras, setExtras] = useState([]);
   const [revelar, setRevelar] = useState(false);
+  const [nuevo, setNuevo] = useState({ emoji: '', titulo: '' });
 
   const cargar = useCallback(async () => {
-    const { data } = await supabase.from('premio_votos').select('*');
-    setVotos(data || []);
+    const [v, x] = await Promise.all([
+      supabase.from('premio_votos').select('*'),
+      supabase.from('premios_extra').select('*').order('created_at'),
+    ]);
+    setVotos(v.data || []);
+    setExtras(x.data || []);
   }, []);
 
   useEffect(() => { cargar(); }, [cargar]);
-  useEnVivo(['premio_votos'], cargar);
+  useEnVivo(['premio_votos', 'premios_extra'], cargar);
+
+  const premios = todosLosPremios(PREMIOS, extras);
+
+  async function agregar(e) {
+    e.preventDefault();
+    const titulo = nuevo.titulo.trim();
+    if (!titulo || !yo) return;
+    const { error } = await supabase.from('premios_extra').insert({ emoji: nuevo.emoji.trim() || '🏅', titulo, creado_por: yo.id });
+    if (error) return alert('No se pudo agregar el premio.');
+    setNuevo({ emoji: '', titulo: '' });
+    cargar();
+  }
+
+  async function borrarPremio(pr) {
+    if (!confirm(`¿Borrar el premio "${pr.titulo}"? Se pierden sus votos.`)) return;
+    await supabase.from('premio_votos').delete().eq('premio', pr.id);
+    await supabase.from('premios_extra').delete().eq('id', pr.id);
+    cargar();
+  }
 
   async function votar(premio, nominado_id) {
     if (!yo) return;
@@ -41,12 +66,15 @@ export default function Premios() {
         <p className="small muted" style={{ margin: '0.3rem 0 0' }}>Ya votaron {votantes} personas.</p>
       </div>
 
-      {PREMIOS.map((pr) => {
+      {premios.map((pr) => {
         const mio = votos.find((v) => v.premio === pr.id && v.votante_id === yo?.id);
         const ranking = ganadores(votos, pr.id);
         return (
           <div key={pr.id} className="card">
-            <h2>{pr.emoji} {pr.titulo}</h2>
+            <div className="row between" style={{ alignItems: 'flex-start' }}>
+              <h2>{pr.emoji} {pr.titulo}</h2>
+              {pr.extra && <button className="icon-btn" onClick={() => borrarPremio(pr)} aria-label="Borrar premio">🗑️</button>}
+            </div>
             <select value={mio?.nominado_id || ''} onChange={(e) => votar(pr.id, e.target.value)}>
               <option value="">— Mi voto —</option>
               {personas.map((p) => <option key={p.id} value={p.id}>{p.emoji} {p.nombre}</option>)}
@@ -63,6 +91,15 @@ export default function Premios() {
           </div>
         );
       })}
+
+      <form className="card" onSubmit={agregar}>
+        <h2>➕ Agregar un premio</h2>
+        <div className="row">
+          <input value={nuevo.emoji} onChange={(e) => setNuevo({ ...nuevo, emoji: e.target.value })} placeholder="🏅" maxLength={8} style={{ width: '4rem', textAlign: 'center' }} aria-label="Emoji" />
+          <input value={nuevo.titulo} onChange={(e) => setNuevo({ ...nuevo, titulo: e.target.value })} placeholder="Ej: El que más se quejó del calor" maxLength={60} aria-label="Nombre del premio" />
+        </div>
+        <button className="btn full" style={{ marginTop: '0.5rem' }} disabled={!yo || !nuevo.titulo.trim()}>Agregar</button>
+      </form>
 
       <button
         className="btn full coral"

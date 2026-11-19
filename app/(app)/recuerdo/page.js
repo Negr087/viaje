@@ -5,7 +5,7 @@ import { Cabecera, Vacio } from '@/components/ui';
 import { supabase, archivoUrl } from '@/lib/supabase';
 import { useEnVivo } from '@/lib/en-vivo';
 import { PREMIOS, VIAJE, fmtDia, numeroDeDia } from '@/lib/config';
-import { ganadores } from '@/lib/premios';
+import { ganadores, todosLosPremios } from '@/lib/premios';
 
 const POR_DIA = 3; // mejores fotos por día (las más likeadas)
 
@@ -14,22 +14,25 @@ export default function Recuerdo() {
   const [mensajes, setMensajes] = useState([]);
   const [fotos, setFotos] = useState([]);
   const [votos, setVotos] = useState([]);
+  const [extras, setExtras] = useState([]);
   const [texto, setTexto] = useState('');
   const [slide, setSlide] = useState(null);
 
   const cargar = useCallback(async () => {
-    const [m, f, v] = await Promise.all([
+    const [m, f, v, x] = await Promise.all([
       supabase.from('mensajes').select('*').order('created_at'),
       supabase.from('fotos').select('*, foto_likes(persona_id)').eq('es_video', false),
       supabase.from('premio_votos').select('*'),
+      supabase.from('premios_extra').select('*').order('created_at'),
     ]);
     setMensajes(m.data || []);
     setFotos(f.data || []);
     setVotos(v.data || []);
+    setExtras(x.data || []);
   }, []);
 
   useEffect(() => { cargar(); }, [cargar]);
-  useEnVivo(['mensajes', 'fotos', 'foto_likes', 'premio_votos'], cargar);
+  useEnVivo(['mensajes', 'fotos', 'foto_likes', 'premio_votos', 'premios_extra'], cargar);
 
   const mio = mensajes.find((m) => m.persona_id === yo?.id);
   useEffect(() => { if (mio) setTexto(mio.texto); }, [mio]);
@@ -50,7 +53,7 @@ export default function Recuerdo() {
       .map(([dia, fs]) => [dia, fs.sort((a, b) => b.foto_likes.length - a.foto_likes.length).slice(0, POR_DIA)]);
   }, [fotos]);
 
-  const premiados = PREMIOS
+  const premiados = todosLosPremios(PREMIOS, extras)
     .map((p) => ({ ...p, ganador: ganadores(votos, p.id)[0]?.[0] }))
     .filter((p) => p.ganador);
 
