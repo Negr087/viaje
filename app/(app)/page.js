@@ -20,7 +20,7 @@ const SECCIONES = [
   ['/agenda', '📅', 'Agenda', 'Qué hacemos hoy'],
   ['/ninera', '🍼', 'Turnos de niñera', 'Noches libres por pareja'],
   ['/gastos', '💸', 'Gastos extra', 'Quién le debe a quién'],
-  ['/bingo', '🦀', 'Bingo del viaje', 'Para los chicos (y no tanto)'],
+  ['/desafios', '🎯', 'Desafíos', '3 por día, sumá puntos'],
   ['/premios', '🏆', 'Premios', 'Votá al más quemado'],
   ['/recuerdo', '💌', `Para ${VIAJE.homenajeada}`, 'Mensajes y lo mejor del viaje'],
 ];
