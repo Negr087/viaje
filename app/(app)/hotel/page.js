@@ -170,7 +170,10 @@ export default function Hotel() {
           Con la app reservamos los restaurantes a la carta (Mare Nostrum, La Hacienda, Sakura) y vemos
           las actividades del día. Bajala antes de viajar e iniciá sesión con el número de reserva.
         </p>
-        <a className="btn" href={HOTEL.app} target="_blank" rel="noreferrer">Descargar la app</a>
+        <div className="row">
+          <a className="btn" href={HOTEL.app} target="_blank" rel="noreferrer">▶️ Descargar en Play Store</a>
+          <a className="small muted" href={HOTEL.appIos} target="_blank" rel="noreferrer">¿iPhone? App Store</a>
+        </div>
       </div>
 
       <div className="tabs">
