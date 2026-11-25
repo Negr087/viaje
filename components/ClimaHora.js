@@ -1,7 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { VIAJE } from '@/lib/config';
-import Sargazo from '@/components/Sargazo';
 
 const CACHE_MS = 20 * 60 * 1000;
 
@@ -64,7 +63,6 @@ export default function ClimaHora({ ahora }) {
       <span className="clima-chip" title={`Hora en ${ciudad}`}>
         🕐 <b>{hora}</b> allá{dif !== 0 && <span className="clima-dif">{difTexto}</span>}
       </span>
-      <Sargazo />
     </div>
   );
 }
