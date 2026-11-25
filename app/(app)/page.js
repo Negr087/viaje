@@ -13,6 +13,7 @@ import { VIAJE, diasDelViaje, estadoViaje, fmtDia, hoyISO, numeroDeDia } from '@
 
 const SECCIONES = [
   ['/info', '✈️', 'Info del viaje', 'Vuelos, hotel, contactos'],
+  ['/hotel', '🏨', 'Info del hotel', 'Mapa, restaurantes, horarios'],
   ['/checklist', '✅', 'Checklist', 'Qué llevar, por persona'],
   ['/familia', '🛏️', 'Familia', 'Quién va y habitaciones'],
   ['/excursiones', '🚤', 'Excursiones', 'Anotate a las que vas'],

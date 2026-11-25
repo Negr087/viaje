@@ -1139,3 +1139,27 @@ input[type='checkbox']:focus-visible { box-shadow: 0 0 0 4px var(--mar-suave); }
 }
 .chat-escribir input { flex: 1; min-width: 0; }
 .chat-escribir .btn { flex: none; padding-inline: 1.1rem; }
+
+/* =========================================================
+   Mapa del hotel
+   ========================================================= */
+.mapa-hotel { width: 100%; height: auto; display: block; border-radius: 16px; background: var(--fondo-2); }
+.mapa-hotel .m-calle { fill: var(--borde-fuerte); }
+.mapa-hotel .m-camino { stroke: var(--sol); stroke-width: 6; stroke-linecap: round; fill: none; opacity: 0.55; }
+.mapa-hotel .m-jardin { fill: rgb(80 170 100 / 0.16); }
+.mapa-hotel .m-jardin-int { fill: rgb(80 170 100 / 0.35); }
+.mapa-hotel .m-edificio { fill: var(--superficie-solida); stroke: var(--borde-fuerte); }
+.mapa-hotel .m-hab { fill: rgb(255 185 56 / 0.25); stroke: var(--borde-fuerte); }
+.mapa-hotel .m-cancha { fill: rgb(138 124 255 / 0.22); stroke: var(--lila); }
+.mapa-hotel .m-agua { fill: rgb(31 143 214 / 0.45); }
+.mapa-hotel .m-arena { fill: rgb(230 200 140 / 0.7); }
+.mapa-hotel .m-mar { fill: rgb(18 120 190 / 0.6); }
+.mapa-hotel .m-rotulo { font-size: 10px; fill: var(--texto-suave); font-weight: 600; }
+.mapa-hotel .m-rotulo-mar { fill: #fff; font-size: 12px; }
+.mapa-hotel .m-pin { cursor: pointer; transition: transform 0.3s var(--spring); }
+.mapa-hotel .m-pin circle { fill: var(--superficie-solida); stroke: var(--mar); stroke-width: 2; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.25)); }
+.mapa-hotel .m-pin text { font-size: 16px; pointer-events: none; }
+.mapa-hotel .m-pin.on circle { fill: var(--coral); stroke: #fff; stroke-width: 3; }
+.mapa-hotel .m-pin:focus { outline: none; }
+.mapa-detalle { margin-top: 0.8rem; padding: 0.7rem 0.9rem; border-radius: 14px; background: var(--mar-suave); }
+.lista-hotel { margin: 0.3rem 0 0; padding-left: 1.1rem; display: grid; gap: 0.4rem; }
